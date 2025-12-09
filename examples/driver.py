@@ -2,7 +2,7 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from tabulate import tabulate   
+ 
 
 from my_python_package.freefall import (
     ode_freefall_euler,
