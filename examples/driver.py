@@ -4,7 +4,7 @@ import matplotlib.pyplot as plt
 import os
  
 
-from my_python_package.freefall import (
+from src.my_python_package.freefall import (
     ode_freefall_euler,
     ode_freefall_rk4,
     compute_cd_star
