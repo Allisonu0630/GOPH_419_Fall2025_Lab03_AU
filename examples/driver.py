@@ -2,7 +2,7 @@ import time
 import numpy as np
 import matplotlib.pyplot as plt
 import os
-from tabulate import tabulate   # <-- new import
+from tabulate import tabulate   
 
 from my_python_package.freefall import (
     ode_freefall_euler,
@@ -18,9 +18,9 @@ def main():
 
     
     heights = [10.0, 20.0, 40.0]   
-    timesteps = np.logspace(-3, -1, 10)  # dt values from 0.001 to 0.1 s
+    timesteps = np.logspace(-3, -1, 10)  # dt values ( 0.001 to 0.1 s )
 
-    # Storage for results
+    # storage 
     results = {"Euler": {}, "RK4": {}}
 
     for method_name, solver in [("Euler", ode_freefall_euler),
@@ -75,7 +75,7 @@ def main():
     for H in heights:
         plt.figure(figsize=(12, 4))
 
-        # Drop time vs dt
+        # drop time vs dt
         plt.subplot(1, 3, 1)
         plt.plot(results["Euler"][H]["dt"], results["Euler"][H]["drop_times"], 'o-', label="Euler")
         plt.plot(results["RK4"][H]["dt"], results["RK4"][H]["drop_times"], 's-', label="RK4")
@@ -116,12 +116,12 @@ def main():
         plt.close()
         
 
-    # Sensitivity (question 3)
+    # #Sensitivity (question 3)
     alpha = 1e-2  # 1% perturbation
     for H in heights:
         print(f"\nSensitivity at H={H} m")
 
-        # Reference drop time with RK4 (small dt for accuracy)
+        #ref drop time with RK4 
         t_ref, _, _ = ode_freefall_rk4(g0, dg_dz, cd_star, H, dt=1e-4)
         t_base = t_ref[-1]
 
@@ -133,14 +133,14 @@ def main():
         t_grad, _, _ = ode_freefall_rk4(g0, dg_dz * (1 + alpha), cd_star, H, dt=1e-4)
         delta_t_grad = t_grad[-1] - t_base
 
-        # cd_star
+        # cd_
         t_cd, _, _ = ode_freefall_rk4(g0, dg_dz, cd_star * (1 + alpha), H, dt=1e-4)
         delta_t_cd = t_cd[-1] - t_base
 
-        # Print results
-        print(f"Δt* from 1% change in g0     = {delta_t_g0:.6f} s")
-        print(f"Δt* from 1% change in g′     = {delta_t_grad:.6f} s")
-        print(f"Δt* from 1% change in cD*    = {delta_t_cd:.6f} s")
+        
+        print(f"Δt from 1% change in g0     = {delta_t_g0:.6f} s")
+        print(f"Δt from 1% change in g′     = {delta_t_grad:.6f} s")
+        print(f"Δt from 1% change in cD*    = {delta_t_cd:.6f} s")
 
 if __name__ == "__main__":
     main()

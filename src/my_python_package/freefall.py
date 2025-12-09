@@ -1,31 +1,27 @@
 import numpy as np
 
 def ode_freefall_euler(g0, dg_dz, cd_star, H, dt):
-    """
+   
     #Solve free fall ODE using Euler's method.
     
-    #Parameters:
-    ----------
-    #g0 : float, Gravity at surface (m/s^2)
-    #dg_dz : float
-        Free-air gradient of gravity ((m/s^2)/m)
-    #cd_star : float
-        Mass-normalized drag coefficient (1/s)
-    #H : float
-        Drop height (m)
-    #dt : float
-        Initial timestep (s)
+    #parameters:
+    
+    #g0 : float, gravity at surface 
+    #dg_dz : float, free-air gradient of gravity 
+    #cd_star : float, mass-normalized drag coefficient (1/s)
+    #H : float, Drop height 
+    #dt : float, initial timestep (s)
     
     #Returns
-   # -------
-   # t, z, v : np.ndarray
-    #    Arrays of time, displacement, velocity
-    """
-    # Initialize lists
+   
+   # t, z, v : np.ndarray, time, displacement, v
+    
+    
+    # initialize lists
     t, z, v = [0.0], [0.0], [0.0]
     
     while z[-1] < H:
-        # Acceleration from ODE: dv/dt
+        # a from ODE: dv/dt
         a = g0 + dg_dz * z[-1] - cd_star * v[-1]
         
         # Euler update
@@ -33,7 +29,8 @@ def ode_freefall_euler(g0, dg_dz, cd_star, H, dt):
         z_new = z[-1] + dt * v[-1]
         t_new = t[-1] + dt
         
-        # Adjust final step if overshooting H
+        # adjust for final step in case overshooting H
+
         if z_new > H:
             # linear correction of dt
             dt_last = (H - z[-1]) / v[-1] if v[-1] > 0 else dt
@@ -41,7 +38,7 @@ def ode_freefall_euler(g0, dg_dz, cd_star, H, dt):
             z_new = H
             t_new = t[-1] + dt_last
         
-        # Append
+        
         v.append(v_new)
         z.append(z_new)
         t.append(t_new)
@@ -50,14 +47,14 @@ def ode_freefall_euler(g0, dg_dz, cd_star, H, dt):
 
 
 def ode_freefall_rk4(g0, dg_dz, cd_star, H, dt):
-    """
-    Solve free fall ODE using classical RK4 method.
-    """
-    # Initialize lists
+    
+    
     t, z, v = [0.0], [0.0], [0.0]
     
     def f(z, v):
-        """Return dz/dt, dv/dt"""
+
+        #return derivatives#
+
         dzdt = v
         dvdt = g0 + dg_dz * z - cd_star * v
         return dzdt, dvdt
@@ -75,7 +72,7 @@ def ode_freefall_rk4(g0, dg_dz, cd_star, H, dt):
         v_new = v_n + (dt/6.0)*(k1v + 2*k2v + 2*k3v + k4v)
         t_new = t[-1] + dt
         
-        # Adjust final step if overshooting H
+        # adjust final step
         if z_new > H:
             dt_last = (H - z[-1]) / v[-1] if v[-1] > 0 else dt
             k1z, k1v = f(z_n, v_n)
@@ -88,7 +85,7 @@ def ode_freefall_rk4(g0, dg_dz, cd_star, H, dt):
             t_new = t[-1] + dt_last
             z_new = H
         
-        # Append
+        
         v.append(v_new)
         z.append(z_new)
         t.append(t_new)
@@ -97,23 +94,19 @@ def ode_freefall_rk4(g0, dg_dz, cd_star, H, dt):
 
 
 def compute_cd_star(diameter=0.015, rho=7800, mu=1.827e-5):
-    """
-    Compute mass-normalized drag coefficient cD* for a sphere in air.
+   
+   # compute mass-normalized drag coefficient cD* for a sphere in air.
     
-    Parameters
-    ----------
-    diameter : float
-        Sphere diameter (m)
-    rho : float
-        Density of sphere material (kg/m^3)
-    mu : float
-        Dynamic viscosity of air (kg/(m·s))
+   # parameters
     
-    Returns
-    -------
-    cd_star : float
-        Mass-normalized drag coefficient (1/s)
-    """
+  #  diameter : float, sphere diameter 
+   # rho : float density 
+  #  mu : float viscosity of air 
+   # 
+   # Returns
+    
+  #  cd_star : float, mass-normalized drag coefficient 
+    
     r = diameter / 2.0
     volume = (4.0/3.0) * np.pi * r**3
     mass = rho * volume
